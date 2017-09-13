@@ -29,7 +29,33 @@ public class Calculate {
     public static int toImproperFrac (int a, int b, int c) {
     	return (a*c+b/c);}
     
-    public static int toMixedNum (int a, int b) {
-    	if {
-    public static int foil (int a, int b, int c, int d, String n) {
-        return (a*n*c*n+a*n*d+);}
+    public static String toMixedNum (int top, int bottom) {
+    	return (top/bottom) + "_" + (top%bottom) + "/" + (bottom);
+    }
+    	
+    public static String foil (int a, int b, int c, int d, String n) {
+    	return (a*n * a*n + b*n +c);
+    }
+    
+    public static boolean isDivisbleBy (int number1, int number2) {
+      if (number1 % number2 == 0); {
+    	  return true;}
+    }
+    
+    public static double adsValue (double a){
+      return (+a);}
+    
+    public static double max (double a, double b){
+      if (a >= b)
+         return (a);
+     if (a <= b)
+         return (b);}
+}
+    
+     public static double max (double a, double b, double c){
+    	 if (a >= b,.c)
+    		 return (a);
+    	 
+    	 
+     }
+     }
