@@ -52,16 +52,21 @@ public class Calculate {
          return (b);}
     
      public static double max (double a, double b, double c){
-    	 if (a >= b && a >=c)
-    		 return a ;
-    	 if (b >= a && b >=c )
-    		 return b ;}
+    	 if (a >  b && a > c)
+    		 return (a) ;
+    	 if (b > a && b > c )
+    		 return (b) ;
+         if (c > a && c > b )
+        	 return (c);
+     }
 
      public static int min (int a, int b) {
-    	 if ( a>= b) 
+    	 if (a>b) 
     		 return a;
-    	 if ( b >= a)
+      else if  (b>a)
     		 return b;	 
+      else if ( a==b)
+    	  return (a=b);
      }
     	 
      public static double round2 (double orig) {
@@ -80,6 +85,16 @@ public class Calculate {
       
      public static double exponent (double a, double i) {
     	  return Math.pow (a,i);
-      }
-}
+    	  
+     }
      public static int gcf (int a, int  b) {
+    	 for(int i = 1; i <= a && i <= b; ++i)
+         {
+             // Checks if i is factor of both integers
+             if(a % i==0 && b % i==0)
+                 return i;
+         }
+     }
+     
+     public static double sqrt () {
+     }
