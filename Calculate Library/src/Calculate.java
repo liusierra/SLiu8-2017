@@ -21,16 +21,16 @@ public class Calculate {
 	public static double average (double numba, double number, double numbar) {
 		return (numba+number+numbar)/3;}
 	
-	//accepts a double and returns a double.
-	//Converts an angle measure given in radians into degrees 	
-	public static double toDegrees (double operand) {
-	    return (operand*3.14159/180);}
-
 	//Converts an angle measure given in radians into degrees.
 	//Accepts a double and returns a double
-    public static double toRadians  (double operand) {
-        return (operand*180/3.14159);}
+    public static double toDegrees  (double operand) {
+        return (operand*180/3.141592653589793);}
     
+    //accepts a double and returns a double.
+  	//Converts an angle measure given in radians into degrees 	
+  	public static double toRadians (double operand) {
+  	    return (operand*3.14159265358/180);}
+  	
     //Provides the coefficients of a quadratic equation in standard form (a, b and c) 
     //and returns the value of the discriminant
     public static double discriminate (double a, double b, double c) {
@@ -38,8 +38,8 @@ public class Calculate {
     
     //Converts mixed number into an improper fraction
     //Accepts three integers and returns a string
-    public static int toImproperFrac (int number, int numberb, int numberc) {
-    	return (number*numberc+numberb/numberc);}
+    public static String toImproperFrac (int num, int numberb, int numberc) {
+    	return (num*numberc + numberb)+ "/" + (numberc);}
     
     //Converts an improper fraction into a mixed number. 
     //Accepts a two integers and returns a String
@@ -50,7 +50,7 @@ public class Calculate {
     //Converts a binomial multiplication of the form (ax+b)(cx+d)
     //into a quadratic equation of the form ax^2+ bx + c.
     public static String foil (int a, int b, int c, int d, String n) {
-    	return (a*n * a*n + b*n +c);
+    	return (a*c)+n+"^2"+"+"+(a*d+b*c)+n+(b*d);
     }
     
     //Determines whether or not one integer is evenly divisible by another
@@ -60,12 +60,12 @@ public class Calculate {
     }
     
     //Returns the absolute value of the number passed
-    public static double adsValue (double a){
-      if ( a>= 0)
-    	  return a;
-      if (a < 0)
-    	  return (a--a--a);}
+    public static double adsValue (double num){
+      if ( num>= 0)
+    	  return num;
+    	  return num-num-num;}
      
+    
     //Returns the larger of the doubles passed
     public static double max (double a, double b){
       if (a >= b)
@@ -75,24 +75,21 @@ public class Calculate {
     
      //Accepts three doubles and returns the largest double
      public static double max (double numbera, double numberb, double numberc){
-    	 if (numbera >  numberb && numbera > numberc)
+    	 if ((numbera >  numberb) && (numbera > numberc))
     		 return (numbera) ;
-     }else if (numberb > numbera && numberb > numberc ) {
+    	 if (numberb > numbera && numberb > numberc ) 
     		 return (numberb) ;
-     } else {
         	 return numberc;
      }
 
+     
      //Returns the smaller value of the integers passed
-     public static int min (int a, int b) {
-    	 if (a>b) 
-    		 return a;
-      else if  (b>a)
-    		 return b;	 
-      else if ( a==b)
-    	  return (a=b);
+     public static int min (int num, int numb) {
+    	 if (num>=numb) 
+    		 return numb;
+    		 return num;	
      }
-    	 
+    	
      //Rounds a double correctly to 2 decimal places and returns a double
      public static double round2 (double orig) {
     	 double result = 0.0;
@@ -108,11 +105,16 @@ public class Calculate {
     	 return result;
      }
       
+     
      //Raises a value to a positive integer power
-     public static double exponent (double a, double i) {
-    	  return Math.pow (a,i);
+     public static double exponent (double a, int power) {
+    	  //return Math.pow (a,i);
+    	 
+    	 for (int i =0; i<=power; i++);
+    	  return (a*i);
      }
      
+     /*
      //Factorial returns the factorial of the value passed 
      public static int factorial (int number) {
     	 if (number == 0) {
@@ -160,6 +162,7 @@ public class Calculate {
         }
      
      }
+     */
      }
      
      
