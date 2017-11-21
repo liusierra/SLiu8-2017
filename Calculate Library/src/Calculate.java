@@ -33,7 +33,7 @@ public class Calculate {
   	
     //Provides the coefficients of a quadratic equation in standard form (a, b and c) 
     //and returns the value of the discriminant
-    public static double discriminate (double a, double b, double c) {
+    public static double discriminant (double a, double b, double c) {
     	return (b*b-4*a*c);}
     
     //Converts mixed number into an improper fraction
@@ -54,16 +54,17 @@ public class Calculate {
     }
     
     //Determines whether or not one integer is evenly divisible by another
-    public static boolean isDivisbleBy (int number1, int number2) {
+    public static boolean isDivisibleBy (int number1, int number2) {
       if (number1 % number2 == 0); {
     	  return true;}
     }
     
     //Returns the absolute value of the number passed
-    public static double adsValue (double num){
+    public static double absValue (double num){
       if ( num>= 0)
     	  return num;
     	  return num-num-num;}
+    
      
     
     //Returns the larger of the doubles passed
@@ -90,79 +91,115 @@ public class Calculate {
     		 return num;	
      }
     	
-     //Rounds a double correctly to 2 decimal places and returns a double
-     public static double round2 (double orig) {
-    	 double result = 0.0;
-    	 
-    	 int tempInt = (int) (orig * 1000);
-    	 int roundNum = tempInt % 10;
-    	 tempInt = tempInt / 10;
-    	 if ( roundNum >= 5 && tempInt < 0)
-    		 tempInt++;
-    	 else if (roundNum <= -5 && tempInt < 0)
-    		 tempInt --;
-    	 result = tempInt /100.0;
-    	 return result;
-     }
-      
-     
-     //Raises a value to a positive integer power
-     public static double exponent (double a, int power) {
-    	  //return Math.pow (a,i);
-    	 
-    	 for (int i =0; i<=power; i++);
-    	  return (a*i);
-     }
-     
-     /*
-     //Factorial returns the factorial of the value passed 
-     public static int factorial (int number) {
-    	 if (number == 0) {
-             return 1;
-         }
-         int fact = 1; // this  will be the result
-         for (int i = 1; i <= number; i++) {
-             fact *= i;
-         }
-         return fact;
-     }
-     
-     
-     //isPirme determines whether or not an integer is prime
-    	 public static boolean isPrime (int number) { 
-    		 int sqrt = (int) Math.sqrt(number) + 1; 
-    		 for (int i = 2; i < sqrt; i++) { 
-    			 if (number % i == 0) { 
-    				 // number is perfectly divisible - no prime return false
-    				 return false;		 
-    			 }else {
-    			 return true;}
-    		 }
-    	 }
 
-    		
-     
-     //Finds the greatest common factor of two integers
-     public static int gcf (int numbera, int numberb) {
-    	 for(int i = 1; i <= numbera && i <= numberb; ++i)
-             // Checks if i is factor of both integers
-             if(numbera % i==0 && numberb % i==0)
-                 return i;
-         }
-    
-     //sqrt returns an approximation of the square root of the value passed
-     //rounds to two decimal places
-     public static double sqrt (double number) {
-        if (number< 0) {
-        	throw new IllegalAgrumentException();
-        }else {
-        double guess =0;
-        double sqrt  =0.1;
-           while
-        }
-     
+     public static double round2 (double numToBeRounded){
+    	 int answer = ((int)(numToBeRounded * 100));
+    	 if ((numToBeRounded * 100)-answer >= .5){
+    		 double roundup = ((int)(numToBeRounded*100)+1)/100.00;
+    		 return roundup;		
+	 }
+	 
+    	 else {
+		 double rounddown = (int)(numToBeRounded*100)/(100.00);
+		 return rounddown;
+	 }
+}
+     //returns value to a certain exponent
+     public static double exponent(double base, double power){
+    	 if(power < 0){
+    		 throw new IllegalArgumentException("Input is negative");
+    	 }
+    	 	double answer = 1.0;
+    	 	for(int i = 0; i < power; i++){
+    	 	answer *= base;
+    	 	}
+    	 		return answer;
      }
-     */
+     //returns factorial
+     public static int factorial(int num1){
+    	 int answer = 1;
+    	 if(num1 < 0){
+    		 throw new IllegalArgumentException("Input is negative");
+    	 }
+    	 for(int i = 1; i <= num1; i++){
+		answer *= i;
+	}
+	return answer;
+}
+     //returns if a number is prime or not
+     public static boolean isPrime(int num1){
+    	 boolean s = true;
+    	 for(int i = 2; i < num1; i++){
+    		 if(s = Calculate.isDivisibleBy(num1, i)){
+    			 return false;
+		}else{
+			s = true;
+		}
+	}
+    	 		return s;
+}
+     
+     //returns the greatest common factor
+     public static int gcf(int num1, int num2){
+    	 @SuppressWarnings("unused")
+    	 boolean numb = true;
+    	 if(numb = Calculate.isDivisibleBy(num1, num2)){
+    		 return num2;
+    	 }
+    	 if(num2 == 0){
+    		 return num2;
+    	 }else{
+    		 return gcf(num2, num1%num2);
+		}
+}
+     //returns the square root of a number
+     public static double sqrt(double a){
+    	 if(a < 0){
+    		 throw new IllegalArgumentException("Input is negative");
+    	 }
+    	 double num;
+	 
+    	 	double squareRoot = a / 2;
+ 
+    	 	do {
+    	 		num = squareRoot;
+		squareRoot = (num + (a / num)) / 2;
+    	 	} while ((num - squareRoot) != 0);
+ 
+    	 	return squareRoot;
      }
+     //returns the roots of a quadratic equation
+     public static String quadForm(int a, int b, int c){
+    	 double x = (double)(a);
+    	 double y = (double)(b);
+    	 double z = (double)(c);
+    	 double solution1 = 0;
+    	 double solution2 = 0;
+    	 String returnValue = "";
+    	 @SuppressWarnings("unused")
+    	 String returnValue2 = "";
+    	 //if discriminant is less than 0
+    	 if(Calculate.discriminant(a, b, c) < 0){
+    		 returnValue = "no real roots";
+    		 	return returnValue;
+    	 	} else if(Calculate.discriminant(a, b, c) == 0){
+    	 		solution1 = -b/2*a;
+    	 		solution1 = Calculate.round2(solution1);
+    	 		returnValue = String.valueOf(solution1);
+    	 		return returnValue;
+    	 	} else{
+		solution1 = Calculate.round2((-b - (Calculate.sqrt(Calculate.discriminant(x, y, z))))/(2*a));
+		solution2 = Calculate.round2((-b + (Calculate.sqrt(Calculate.discriminant(x, y, z))))/(2*a));
+		if(solution1>solution2){
+			returnValue = String.valueOf(solution1);
+			returnValue2 = String.valueOf(solution2);
+			return solution2 + " and " + solution1;
+		} else{
+			return solution1 + " and " + solution2;
+		}
+	}
+}
+}
+
      
      
