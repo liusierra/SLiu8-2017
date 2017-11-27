@@ -26,7 +26,7 @@ import java.util.Scanner;
 		}
 	}
 	public static String produceAnswer(String input){ 
-		//split the string based on the spaces
+		//Split the string based on the spaces
     	String[] splitString = input.split(" ");
     	//Sets each operand and operator to a variable
     	String firstOperand = splitString[0];
@@ -34,9 +34,9 @@ import java.util.Scanner;
     	String secondOperand = splitString[2];
     	int [] operandOne = new int[3];
     	int [] operandTwo = new int[3];
-    	int []result = new int[2];
+    	int [] result = new int[2];
     	//Sets the whole number, numerator, and denominator into an int Array
-    	//Order is whole number first, then numerator, then denominator
+    	//Order: whole number, numerator, denominator
     	operandOne = parseOperands(firstOperand);
     	operandTwo = parseOperands(secondOperand);
     	//change the int arrays into improper fractions, also int array
@@ -58,9 +58,9 @@ import java.util.Scanner;
     	if(mixedNum[0] == 0){
     		return simplifyResult(mixedNum[1], mixedNum[2]);
     	}else{
-    		//String concatenation
+    		//String
     		String wholeNum = mixedNum[0] + "";
-    		//checks for the 0 result
+    		//Checks for the 0 result
     		if(simplifyResult(mixedNum[1], mixedNum[2]).equals("0")){
     			return wholeNum;
     		}else{
@@ -70,7 +70,6 @@ import java.util.Scanner;
     		
     }
 
-    // TODO: Fill in the space below with any helper methods that you think you will need
     public static int[] parseOperands(String operand){
     	String [] splitFraction = operand.split("_");
     	String wholeNum;
@@ -196,6 +195,7 @@ import java.util.Scanner;
     	if(numerator == 0){
     		return "0";
     	} 
+    	
 	//calls gcf and divides both num and dem by it
     	int gcf = greatestCommonFactor(numerator, denominator);
     	numerator = numerator/gcf;
@@ -208,6 +208,7 @@ import java.util.Scanner;
     		return numerator + "/" + denominator;
     		}
     	}
+    
     public static int[] toMixedNum(int numerator, int denominator){
     	int wholeNumber = numerator/denominator;
     	numerator = numerator%denominator;
@@ -231,5 +232,19 @@ import java.util.Scanner;
     	}
     	int[] mixedNum = {wholeNumber, numerator, denominator};
     		return mixedNum;
-}
-}
+    }
+	
+	public static void error (int denominator, String operator) {
+		//Handling "0" for denominator
+		if (denominator == 0) {
+			System.out.println("ERROR: Cannot divide by zero.");
+		}
+		if (operator != "+") {
+		if (operator != "-") {
+		if (operator != "*") {
+		if (operator != "/") {
+			System.out.println("ERROR: Input is in an invalid format.");
+		}	}	}	}   }
+	}
+	
+	
