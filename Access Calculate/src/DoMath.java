@@ -22,6 +22,7 @@ public class DoMath {
 		System.out.println(Calculate. max (-1,-2,-3));
 		System.out.println(Calculate. min (-1,-2));
 		System.out.println(Calculate. round2(-1.0134));
+<<<<<<< HEAD
 		System.out.println(Calculate. exponent (2,0.5));
 		System.out.println(Calculate. sqrt(25.0));
 		System.out.println(Calculate.factorial(0));
@@ -29,5 +30,9 @@ public class DoMath {
 	    System.out.println(Calculate.gcf(256, 488));
 	    System.out.println(Calculate.quadForm(2, -11, 5));
 		
+=======
+		System.out.println(Calculate. exponent (3.0,4));
+		System.out.println(Calculate. factorial(1));
+>>>>>>> branch 'master' of https://github.com/liusierra/SLiu8-2017.git
 		}
 }
