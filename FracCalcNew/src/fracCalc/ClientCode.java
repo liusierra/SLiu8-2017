@@ -2,297 +2,162 @@ package fracCalc;
 
 import java.util.Scanner;
 
-public class FracCalcNew {
-
-	//main method is basically the client
-    public static void main(String[] args) 
-    {
-    	boolean done = false;
-        // TODO: Read the input from the user and call produceAnswer with an equation
-    	System.out.println("Welcome to FracCalc! ^-^");
-    	while(!done) {
-    		Scanner scans = new Scanner(System.in);
-    		System.out.println("please input your equation (ex: 1/2 + 1/2)");
-    		String equation = scans.nextLine();
-    		System.out.println("Answer: " + produceAnswer(equation));
-    		
-    		System.out.println("are you done? type quit to exit or no to continue");
-    		String answer = scans.nextLine();
-    		if(answer.equals("no")) {
-    			done = false;
-    		} else if (answer.equals("quit")) {
-    			done = true;
-    			System.out.println("see ya!");
-    		} 
-    		while (!answer.equals("quit") && !answer.equals("no")) {
-    		System.out.println("try again. type quit or no"); 
-    		answer = scans.nextLine();
-    		if(answer.equals("no")) {
-    			done = false;
-    		} else if (answer.equals("quit")) {
-    			done = true;
-    		} 
-    		}
-    	}
-    
- 
-    }
-    
-    // ** IMPORTANT ** DO NOT DELETE THIS FUNCTION.  This function will be used to test your code
-    // This function takes a String 'input' and produces the result
-    //
-    // input is a fraction string that needs to be evaluated.  For your program, this will be the user input.
-    //      e.g. input ==> "1/2 + 3/4"
-    //        
-    // The function should return the result of the fraction after it has been calculated
-    //      e.g. return ==> "1_1/4"
-    public static String produceAnswer(String input)
-    { 
-        // TODO: Implement this function to produce the solution to the input
-        
-    	String[] separatedOperands = input.split(" ");
-    	int indexOfOperator = 1;
-    	int operand2Index = 2;
-    	String operand2 = separatedOperands[operand2Index];
-	String operand1 = separatedOperands[0];
-	String denominator;
-	String numerator;
-	String whole;
-	String denominator2;
-	String numerator2;
-	String whole2;
-	String[] operand2Split;
-	String[] operand1Split;
-	String answer = "";
-		do {
-			operand2 = separatedOperands[operand2Index];
-		if(operand1.indexOf("/") < 0) {
-			numerator = "0";
-			denominator = "1";
-			whole = operand1;
-		} else if(operand1.indexOf("_") < 0) {
-			operand1Split = operand1.split("/");
-			numerator = operand1Split[0];
-			denominator = operand1Split[operand1Split.length - 1];
-			whole = "0";
-		} else {
-			whole = operand1.substring(0, operand1.indexOf("_"));
-			numerator = operand1.substring(operand1.indexOf("_")+1, operand1.indexOf("/"));
-			denominator = operand1.substring(operand1.indexOf("/")+1);
-		}
-		
-		if(operand2.indexOf("/") < 0) {
-			numerator2 = "0";
-			denominator2 = "1";
-			whole2 = operand2;
-		} else if(operand2.indexOf("_") < 0) {
-			operand2Split = operand2.split("/");
-			numerator2 = operand2Split[0];
-			denominator2 = operand2Split[operand2Split.length - 1];
-			whole2 = "0";
-		} else {
-			whole2 = operand2.substring(0, operand2.indexOf("_"));
-			numerator2 = operand2.substring(operand2.indexOf("_")+1, operand2.indexOf("/"));
-			denominator2 = operand2.substring(operand2.indexOf("/")+1);
-		}
-		
-		int denom = Integer.parseInt(denominator);
-		int num = Integer.parseInt(numerator);
-		int wholeNum = Integer.parseInt(whole);
-		
-		int denom2 = Integer.parseInt(denominator2);
-		int num2 = Integer.parseInt(numerator2);
-		int wholeNum2 = Integer.parseInt(whole2);
-		
-		int improperTop = num;
-		int improper2Top = num2;
-		
-		if(wholeNum != 0 ) {
-			if(wholeNum < 0) {
-				wholeNum = wholeNum*-1;
-				improperTop = (wholeNum * denom) + num;
-				improperTop = improperTop*-1;
-			} else {
-				improperTop = (wholeNum * denom) + num;
+	public class ClientCode {
+	    public static void main(ClientCode[] args) {
+	    	//ask the user for expressions to calculate
+	        boolean done = false;
+	        String userExpr;
+	        Scanner input = new Scanner(System.in);
+	        while(!done){//loops until the user types quit
+	            System.out.println("Enter your expression: ");
+	            userExpr = input.nextLine();
+	            if(!(userExpr.equals("quit"))){
+	                System.out.println(produceAnswer(userExpr));
+	            }else{
+	                done = true;
+	            }
+	        }
+	    }
+	    
+	    public static String produceAnswer(String input){ 
+			//split the string based on the spaces
+	    	String[] splitString = input.split(" ");
+	    	//Sets each operand and operator to a variable
+	    	String firstOperand = splitString[0];
+	    	String operator = splitString[1];
+	    	String secondOperand = splitString[2];
+	    	int [] operand1 = new int[3];
+	    	int [] operand2 = new int[3];
+	    	int []result = new int[2];
+	    	//Sets the whole number, numerator, and denominator into an int Array
+	    	//Order is whole number first, then numerator, then denominator
+	    	operand1 = parseOperands(firstOperand);
+	    	operand2 = parseOperands(secondOperand);
+	    	//change the int arrays into improper fractions, also int array
+	    	int []improperFrac1 = toImproperFrac(operand1[0], operand1[1], operand1[2]);
+	    	int []improperFrac2 = toImproperFrac(operand2[0], operand2[1], operand2[2]);
+	    	//check the operators to call different methods
+	    	if(operator.equals("/")){
+	    		result = divideAnswer(improperFrac1[0], improperFrac1[1], improperFrac2[0], improperFrac2[1]);
+	    	}else if(operator.equals("*")){
+	    		result = multiplyAnswer(improperFrac1[0], improperFrac1[1], improperFrac2[0], improperFrac2[1]);
+	    	} else if(operator.equals("+")){
+	    		result = addAnswer(improperFrac1[0], improperFrac1[1], improperFrac2[0], improperFrac2[1]);
+	    	} else{
+	    		result = subtractAnswer(improperFrac1[0], improperFrac1[1], improperFrac2[0], improperFrac2[1]);
+	    	}
+	    	//Uses the result and change it into a mixed number
+	    	int[] mixedNum = toMixedNum(result[0], result[1]);
+	    	//Returns result to main, if the whole number is 0, just return numerator and denominator
+	    	if(mixedNum[0] == 0){
+	    		return simplifyResult(mixedNum[1], mixedNum[2]);
+	    	}else{
+	    		//String concatenation
+	    		String wholeNum = mixedNum[0] + "";
+	    		//checks for the 0 result
+	    		if(simplifyResult(mixedNum[1], mixedNum[2]).equals("0")){
+	    			return wholeNum;
+	    		}else{
+	    			return wholeNum + "_" + simplifyResult(mixedNum[1], mixedNum[2]);
+	    		}
+	    	}
+	    		
+	    }
+	    public static int[] toImproperFrac(int wholeNum, int numerator, int denominator){
+	    	// if the wholeNum is negative, have to subtract numerator instead of adding it
+	    	if(wholeNum < 0){
+	    		numerator = wholeNum*denominator - numerator;
+	    	}else{
+	    		numerator = (wholeNum*denominator) + numerator;
+	    	}
+	    	//int array to store results
+			int [] numAndDem = new int[2];
+			numAndDem[0] = numerator;
+			numAndDem[1] = denominator;
+			return numAndDem;}
+	    
+	    //returns the greatest common factor
+	     public static int gcf(int num1, int num2){
+	    	 @SuppressWarnings("unused")
+	    	 boolean numb = true;
+	    	 if(numb = Calculate.isDivisibleBy(num1, num2)){
+	    		 return num2;
+	    	 }
+	    	 if(num2 == 0){
+	    		 return num2;
+	    	 }else{
+	    		 return gcf(num2, num1%num2);
 			}
-		}
-		
-		if(wholeNum2 != 0 ) {
-			if(wholeNum2 < 0) {
-				wholeNum2 = wholeNum2*-1;
-				improper2Top = (wholeNum2 * denom2) + num2;
-				improper2Top = improper2Top*-1;
-			} else {
-				improper2Top = (wholeNum2 * denom2) + num2;
-			}
-		}
-		
-
-		
-		if(separatedOperands[indexOfOperator].equals("*")) {
-			answer = multiply(improperTop, improper2Top, denom, denom2);
-		}
-		
-		if(separatedOperands[indexOfOperator].equals("/")) {
-			answer = divide(improperTop, denom, improper2Top, denom2);
-		}
-		
-		int commonDenom = denom;
-		if(denom != denom2) {
-			if(denom != 1 && denom2 != 1) {
-			commonDenom = commonDenom(denom, denom2);
-			improperTop = improperTop * denom2;
-			improper2Top = improper2Top * denom;
-			} else if(denom == 1 && denom2 != 1) {
-				commonDenom = denom2;
-				improperTop = improperTop * denom2;
-			} else if(denom == 1 && denom2 == 1) {
-				commonDenom = 1;
-			} else if(denom != 1 && denom2 == 1) {
-				commonDenom = denom;
-				improper2Top = improper2Top * denom;
-			}
-		}
-
-		
-
-		if(separatedOperands[indexOfOperator].equals("+")) {
-
-			
-			answer = addition(improperTop, improper2Top, commonDenom);
-			
-		}
-		
-		if(separatedOperands[indexOfOperator].equals("-")) {
-			
-			answer = subtraction(improperTop, improper2Top, commonDenom);
-		}
-		
-		
-		indexOfOperator+=2;
-		operand1 = answer;
-		operand2Index = operand2Index+=2;
-		
-		} while(separatedOperands.length >= operand2Index);
-		
-		String[] answerSplit = answer.split("/");
-		int answerTop = Integer.parseInt(answerSplit[0]);
-		int answerBot = Integer.parseInt(answerSplit[1]);
-		
-		if(answerTop < 0 && answerBot < 0) {
-			answerTop = answerTop * -1;
-			answerBot = answerBot * -1;
-		}
-		
-		if(answerTop > 0 && answerBot < 0) {
-			answerTop = answerTop * -1;
-			answerBot = answerBot * -1;
-		}
-		if( answerTop < 0 && answerBot > 0) {
-
-			
-		}
-		
-		int wholeNumAns = answerTop / answerBot;
-		int gcf = gcf(answerTop, answerBot);
-		
-		if (answerTop > 1 && answerBot > 1) {
-		answer = wholeNumAns + "_" + ((answerTop % answerBot) / gcf) + "/" + (answerBot / gcf);
-		}
-		
-		if(answerBot > answerTop && answerBot > 1 && answerTop > 0) {
-			answer = ((answerTop % answerBot) / gcf) + "/" + (answerBot / gcf);
-		}
-		
-		if(answerTop % answerBot == 0 || answerTop == answerBot) {
-			answer = wholeNumAns + "";
-		}
-	
-		
-		if(answerTop < 0 && answerBot > 1) {
-			if(answerTop % answerBot != 0) {
-				answer = wholeNumAns + "_" + (((-1*answerTop) % answerBot) / gcf) + "/" + (answerBot / gcf);
-			}
-			if(answerTop % answerBot == 0) {
-				answer = wholeNumAns +"";
-			}
-			
-			if(wholeNumAns == 0) {
-				answer = (((answerTop) % answerBot) / gcf) + "/" + (answerBot / gcf);
-			}
-		}
-
-		
-		if(answerBot == 1) {
-			answer = answerTop +"";
-		}
-		
-		if(answerBot == -1) {
-			answerTop = -1 *answerTop;
-			answer = answerTop + "";
-		}
-		
-		if(answerTop == 0) {
-			answer = "0";
-		}
-		
-		return answer; 
-        
-    }
-    
-    public static int commonDenom(int denom, int denom2) {
-    		int commonDenom = denom * denom2;
-    		return commonDenom;
-    	
-    }
-
-
-    public static String multiply(int num, int num2, int denom, int denom2) {
-    	int multiplyTop = num * num2;
-    	int multiplyBottom = denom * denom2;
-    	
-    	String answer = multiplyTop + "/" + multiplyBottom;
-
-    	return answer;
-    	
-    }
-    
-    public static String subtraction(int num, int num2, int commonDenom) {
-    	int subtract = num - num2;
-    	String answer = subtract + "/" + commonDenom;
-
-    	return answer;
-    }
-    
-    public static String addition(int num, int num2, int commonDenom) {
-    	int add = num + num2;
-    	String answer = add + "/" + commonDenom;
-
-    	return answer;
-    }
-    
-    public static String divide(int num, int denom, int num2, int denom2) {
-    	int top = num * denom2;
-    	int bottom = denom * num2;
-   
-    	String answer = top + "/" + bottom;
-    	return answer;
-    	
-    }
-	public static int gcf(int num1, int num2) {
-		int gcf = 0;
-		if(num1 < 0) {
-			num1 = num1*-1;
-		}
-		for(int i = 1; i <= num1 && i <= num2; i++) {
-			if((num1 % i == 0) && (num2 % i == 0)) {
-				gcf = i;
-			}
-		}
-		return gcf;
-		
 	}
-
-   
-    
-}
+	     private static int[] parseOperands(String operand){
+		    	//Pass and parse the input to change to first operand, operator, and second operand
+		        String wholeNumber = "";
+		        String numerator = "";
+		        String denominator = "";
+		        int[] result = new int[3];//Storing 
+		        String[] slash;
+		        String[] splitUnderscore = operand.split("_");
+		        //split the input by underscore
+		        if(splitUnderscore.length == 2){
+		        	//if the input is a mixed number
+		            wholeNumber = splitUnderscore[0];
+		            //set the first element to wholeNumber
+		            slash = splitUnderscore[1].split("/");
+		            //split at slash to find numerator/denominator
+		            if(slash.length == 2){
+		                numerator = slash[0];
+		                denominator = slash[1];
+		            }
+		        }else{
+		        	//if there is no wholeNumber
+		            slash = operand.split("/");
+		            if(slash.length == 2){
+		                wholeNumber = "0";
+		                numerator = slash[0];
+		                denominator = slash[1];
+		            }else{
+		                wholeNumber = splitUnderscore[0];
+		                numerator = "0";
+		                denominator = "1";
+		            }
+		        }
+		        result[0] = Integer.parseInt(wholeNumber);
+		        result[1] = Integer.parseInt(numerator);
+		        result[2] = Integer.parseInt(denominator);
+		        return result;
+		        
+		    }
+	     //returns the square root of a number
+	     public static double sqrt(double a){
+	    	 if(a < 0){
+	    		 throw new IllegalArgumentException("Input is negative");
+	    	 }
+	    	 double num;
+		 
+	    	 	double squareRoot = a / 2;
+	 
+	    	 	do {
+	    	 		num = squareRoot;
+			squareRoot = (num + (a / num)) / 2;
+	    	 	} while ((num - squareRoot) != 0);
+	 
+	    	 	return squareRoot;
+	     }
+	     
+	    public static String simplifyResult(int numerator, int denominator){
+	    	//first checks if the numerator is 0, simplifes whole equation
+	    	if(numerator == 0){
+	    		return "0";
+	    	} 
+	    	//calls gcf and divides both num and dem by it
+	    	int gcf = greatestCommonFactor(numerator, denominator);
+	    	numerator = numerator/gcf;
+	    	denominator = denominator/gcf;
+	    	if(denominator == 1){
+	    		//String concatenates answer, if denominator is 1, just return the numerator
+	    		return numerator + "";
+	    		//otherwise, return both numerator and denominator
+	    	}else{
+	    		return numerator + "/" + denominator;
+	    	}
+	    }
