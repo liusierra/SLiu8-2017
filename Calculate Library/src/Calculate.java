@@ -127,17 +127,31 @@ public class Calculate {
 	return answer;
 }
      //returns if a number is prime or not
-     public static boolean isPrime(int num1){
-    	 boolean s = true;
-    	 for(int i = 2; i < num1; i++){
-    		 if(s = Calculate.isDivisibleBy(num1, i)){
-    			 return false;
-		}else{
-			s = true;
-		}
-	}
-    	 		return s;
-}
+     public static boolean isPrime(int number){
+         int counter = 0;
+         if(number <= 0){
+             throw new IllegalArgumentException("Your input is 0 or a negative number");
+         }
+         else if(number > 0){//checks if the number is positive
+             for(int i = 1; i <= number; i++){
+                 if(isDivisibleBy(number, i)){
+                     counter++;
+                     //sets up a counter to keep track of the times the number is divisble by a number
+                 }
+             }
+             if(counter == 2){
+            	 //if the number is only divisible by 1 and itself
+                 return true;
+             }
+             else{
+                 return false;
+             }
+         }
+         else{
+        	 //if the number is 0 or negative
+             return false;
+         }
+     }
      
      //returns the greatest common factor
      public static int gcf(int num1, int num2){
