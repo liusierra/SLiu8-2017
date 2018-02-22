@@ -2,7 +2,7 @@ package fracCalc;
 
 import org.junit.Test;
 
-// Checkpoint 3-only tests
+// Checkpoint 3-only test
 public class FracCalcTestCheckpoint3
 {
     @Test public void testCheckpoint3_AdditionSimple3() {FracCalcTestALL.assertForEarlyCheckpoints(null, null, "4_3/7", FracCalc.produceAnswer("1_1/7 + 3_2/7"));}
