@@ -1,20 +1,21 @@
 package textExcel;
 
-public class EmptyCell implements Cell {
+public class ValueCell implements Cell {
 
-	public EmptyCell() {
+	public ValueCell(String value) {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String abbreviatedCellText() {
-		//10 spaces
-		return "          ";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String fullCellText() {
-		return "";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
