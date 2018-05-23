@@ -1,137 +1,90 @@
 package textExcel;
 
-package textExcel;
-public class FormulaCell extends RealCell{
-	private String value = "";
-	private Cell[][] wholeSpreadsheet;
-	public FormulaCell(String input, Cell[][] array){
-		value = input;
-		wholeSpreadsheet = array;
-		//stores string in parent class
+public class FormulaCell extends RealCell {
+	Cell[][] Excel;
+	//constructor
+	public FormulaCell (String input, Cell[][] grid) {
+		super(input);
+		this.Excel = grid;
 	}
-	public double getDoubleValue(){
-		double sum = 0.0;
-		String noParenthesis = value.substring(2, value.length() - 2);
-		String[] changeValue = noParenthesis.split(" ");
-		if(changeValue.length == 1){
-			return Double.parseDouble(changeValue[0]);
-			} else if(changeValue[0].toUpperCase().equals("AVG") || changeValue[0].toUpperCase().equals("SUM")){
-				//get the beginning cell and ending cell
-				int counter = 0;
-				String beginning = changeValue[1].toUpperCase().substring(0, changeValue[1].indexOf('-'));
-				String ending = changeValue[1].toUpperCase().substring(changeValue[1].indexOf('-') + 1);
-				if(changeValue[0].toUpperCase().equals("AVG")){
-					String placeHolder = beginning;
-					while(!(placeHolder.equals(ending))){
-						SpreadsheetLocation loc = new SpreadsheetLocation(placeHolder);
-						//change the column when its the same row
-						if(placeHolder.substring(1).equals(ending.substring(1))){
-							//changes the letter by one if the rows are the same
-							placeHolder = ((char)(placeHolder.charAt(0) + 1)) + beginning.substring(1);
-							if(wholeSpreadsheet[loc.getRow()][loc.getCol()] instanceof RealCell){
-								//makes sure its a realcell there before adding one to counter
-								counter++;
-							}
-						}else{
-							//Move to next row if the row isnt equal
-							placeHolder = placeHolder.charAt(0) + "" + (Integer.parseInt(placeHolder.substring(1)) + 1);
-							if(wholeSpreadsheet[loc.getRow()][loc.getCol()] instanceof RealCell){
-								counter++;
-							}
-						}
-				}
-					//average and sum are basically same method just average divides
-				return (sum(beginning, beginning, ending)) / (counter+1);
-			}else if(changeValue[0].toUpperCase().equals("SUM")){
-				return (sum(beginning,beginning,ending));
-			}
-		} else{
-			//checks to see if its a cell or number
-			if(changeValue[0].toUpperCase().charAt(0) >= 'A' && changeValue[0].toUpperCase().charAt(0) <='L'){
-				SpreadsheetLocation cell = new SpreadsheetLocation(changeValue[0].toUpperCase());
-				if(wholeSpreadsheet[cell.getRow()][cell.getCol()] instanceof RealCell){
-					sum = ((RealCell)wholeSpreadsheet[cell.getRow()][cell.getCol()]).getDoubleValue();
-				}
-			}else{
-				sum = Double.parseDouble(changeValue[0]);
-			}
-			for(int i = 1; i < changeValue.length - 1; i += 2 ){
-				//checks whether number or a cell
-				double num=0.0;
-				if(changeValue[i + 1].toUpperCase().charAt(0) >= 'A' && changeValue[i + 1].toUpperCase().charAt(0) <='L'){
-						changeValue[i + 1] = changeValue[i + 1].toUpperCase();
-						SpreadsheetLocation loc = new SpreadsheetLocation(changeValue[i + 1]);
-						if(wholeSpreadsheet[loc.getRow()][loc.getCol()] instanceof RealCell){
-							//casts to RealCell to call doubleValue
-							num = ((RealCell)wholeSpreadsheet[loc.getRow()][loc.getCol()]).getDoubleValue();
-						}
-				}else{
-					num = Double.parseDouble(changeValue[i + 1]);
-				}
-				if(changeValue[i].equals("/")){
-					sum /=  num;
-				}else if(changeValue[i].equals("*")){
-					sum *= num;
-				}else if(changeValue[i].equals("+")){
-					sum += num;
-				}else{
-					sum -= num;
-				}
-			}
-		}
-		return sum;
-	}
-	public String fullCellText(){
-		return value;
-	}
+	//10 spaces or more to be abbreviated 
 	public String abbreviatedCellText() {
-		String value = getDoubleValue() + "";
-		if (value.length() > 10) {
-			return value.substring(0, 10);
-		} else {
-			for (int i = value.length(); i < 10; i++) {
-				value += " ";
-			}
-			return value;
+		String formulainput = getDoubleValue() + "";
+		if (formulainput.length() > 10) {
+			return formulainput.substring(0, 10); //only shows first ten
+		} 
+		else {
+			return spaces(formulainput);
+			//spaces method in real cell, adds spaces behind the value to fill the 10 spaces
 		}
 	}
-public double sum(String beginning, String changedCell, String end){	
-		SpreadsheetLocation loc = new SpreadsheetLocation(changedCell);
-		//base case
-		if(changedCell.equals(end)){
-			if(wholeSpreadsheet[loc.getRow()][loc.getCol()] instanceof RealCell){
-				return ((RealCell)wholeSpreadsheet[loc.getRow()][loc.getCol()]).getDoubleValue();
-			}else{
-				return 0.0;
+
+	@Override
+	public String fullCellText() {
+		return getValue();
+	}
+	//calls get value
+	
+	public double getDoubleValue() {
+		double dvalue = 0.0;
+		String[] parts = getValue().split(" ");
+	    //splits on spaces and checks for sum and avg command regardless of upper or lower case
+		if(parts[1].toLowerCase().equals("sum") || parts[1].toLowerCase().equals("avg")) {
+			String[] newCell= parts[2].split("-");
+			//deals with stuff such as L14=(SUM B6-C12), splits the "to", and calls sumAndAvg
+			dvalue = sumAndAvg(parts[1], newCell[0], newCell[1]);
+	
+		} else {
+			//changes any cell identifier into the value of the cell
+			for(int i=1; i<parts.length-1; i++) {
+				if(Character.isLetter(parts[i].charAt(0))) {
+					SpreadsheetLocation location = new SpreadsheetLocation(parts[i]);
+					parts[i] = ((RealCell) Excel[location.getRow()][location.getCol()]).getDoubleValue()+"";	
+				}
+			}
+			dvalue = Double.parseDouble(parts[1]);
+			for(int i=2; i< parts.length-1; i++) {
+				dvalue = calculate (dvalue, parts[i], parts[i+1]);
+				i++;
 			}
 		}
-		//Case 1: if the columns aren't the same, but the rows are, move horizontally
-		if(Character.toUpperCase(beginning.charAt(0)) != Character.toUpperCase(end.charAt(0)) 
-				&& Integer.parseInt(beginning.substring(1)) == Integer.parseInt(end.substring(1))){
-			changedCell = ((char)(changedCell.charAt(0) + 1)) + beginning.substring(1);
-			//if the columns are the same,but the rows are not, move vertically
-		}else if(Character.toUpperCase(beginning.charAt(0)) == Character.toUpperCase(end.charAt(0))
-				&& Integer.parseInt(beginning.substring(1)) <= Integer.parseInt(end.substring(1))){
-			
-			changedCell = Character.toString(beginning.charAt(0)) + (Integer.parseInt(changedCell.substring(1)) + 1);
-			
-			//if the columns and the rows aren't the same, move through all of the cells
-		}else{
-			//when row is less than the ending row, keep going down
-			if(Integer.parseInt(changedCell.substring(1)) < Integer.parseInt(end.substring(1))){
-				changedCell = Character.toString(changedCell.charAt(0)) + (Integer.parseInt(changedCell.substring(1)) + 1);
-				//if the rows are the same, reset and move to next column
-			}else if(Integer.parseInt(changedCell.substring(1)) == Integer.parseInt(end.substring(1))){
-				changedCell = ((char)(changedCell.charAt(0) + 1)) + "" + beginning.substring(1);
+		return dvalue;
+	}
+	//math operations
+	public double calculate (double num1, String operator, String operand) {
+		double result = 0.0;
+		double num2 = Double.parseDouble(operand);
+		if (operator.equals("+")) {
+			result = num1 + num2;
+		} else if (operator.equals("-")) {
+			result = num1 - num2;
+		} else if (operator.equals("*")) {
+			result = num1 * num2;
+		} else if (operator.equals("/")){
+			result = num1 / num2;
+		}
+		return result;
+		}
+	
+	//finds the sum or average from one cell to another
+	public double sumAndAvg (String formula, String cell1, String cell2) {
+		double sum = 0.0;
+		int count = 0; //total numbers of cells that we went through
+		SpreadsheetLocation loc1 = new SpreadsheetLocation(cell1);//e.g from A1 to B1
+		SpreadsheetLocation loc2 = new SpreadsheetLocation(cell2);
+		
+		for(int i=loc1.getRow(); i<=loc2.getRow();i++) {
+			for(int j=loc1.getCol(); j<=loc2.getCol(); j++) {
+				sum+= ((RealCell)Excel[i][j]).getDoubleValue();	
+				count++;
 			}
 		}
-		//gets the value of the cell and keeps it and returns it
-		double first =0.0;
-		if(wholeSpreadsheet[loc.getRow()][loc.getCol()] instanceof RealCell){
-			 first = ((RealCell)wholeSpreadsheet[loc.getRow()][loc.getCol()]).getDoubleValue();
-			return (first + sum(beginning, changedCell, end));
-		}else{
-			return sum(beginning, changedCell, end);
+		
+		if(formula.toLowerCase().equals("sum")) {
+			return sum;
+		} else { //avg
+			return sum/(double)count; //sum divided by number of cells went through for avg
 		}
 	}
 }
+

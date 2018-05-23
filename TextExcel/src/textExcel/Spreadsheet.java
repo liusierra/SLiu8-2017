@@ -1,14 +1,9 @@
+
 package textExcel;
-
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.Scanner;
-
-// Update this file with your own code.
 
 public class Spreadsheet implements Grid
 {
-	private Cell[][] textExcel = new Cell [getRows()][getCols()];
+	private Cell[][] Excel = new Cell [getRows()][getCols()];
 	
 	public Spreadsheet(){
 		newSheet();
@@ -17,232 +12,149 @@ public class Spreadsheet implements Grid
 	@Override
 	public String processCommand(String command)
 	{
-		//checks to see if the input is anything, if not just ends here
+		//checks if the input is nothing
 		if(command.length() == 0 || command.equals("quit")){
 			return "";
 		}
 		
-		//splits the input by spaces
-		String[] split = command.split(" ", 3);
+		//splits to 3 because the value assigned or trying to be assigned to cell may have spaces. 
+		//e.g (A1 = "Hello")
+		String[] arr = command.split(" ", 3);
 		
-		//gets rid of issue if the input has lowercases or uppercases
-		// for columns
-		split[0] = split[0].toUpperCase();
+		//gets rid of lowercase or uppercase
+		arr[0]=arr[0].toUpperCase();
 		
-		//checks to see if the input has save in it
-		if(split[0].equals("SAVE")){
-			return saveData(split[1]);
-		}
-		
-		// checks for an open in the input
-		if(split[0].equals("OPEN")){
-			return openData(split[1]);
-		}
-		//checks to see if the input is only 3 characters or less
-		//which could only be a cell and returns the value
-		if(split.length == 3){
-			setCellValue(split[0], split[2]);
+		//checks if the input is only 3 or less which could only be a cell and returns the value
+		if(arr.length == 3){
+			setCellValue(arr[0], arr[2]);
 			return getGridText();
 		
-		// the first value is all uppercase
-		// checks to see if the first word is clear
-		}else if(split[0].contains("CLEAR")){
+		// checks for clearing c
+		}else if(arr[0].toLowerCase().contains("clear")){
 			
-			// means that its clear with a cell so clears the cell
-			if(split.length == 2){
-				clearCell(split[1]);
-				
-				//returns how the grid looks like afterwards
+			// clears only one cell
+			if(arr.length == 2){
+				clearOneCell(arr[1]);
+				//returns the new grid 
 				return getGridText();
-				
+	
 			}else{
 				
 				//clears the entire grid by making an entirely new grid
 				newSheet();
-				
-				//returns the new grid
 				return getGridText();
 			}
 			
 		}else{
 			//returns the value of the cell
-			return inspectCell(split[0]);
+			return inspectCell(arr[0]);
 		}			
 	}
 
 	@Override
-	public int getRows()
+	public int getRows() //setting of 20 rows and 12 cols
 	{
-		//total number of rows
 		return 20;
 	}
 
 	@Override
 	public int getCols()
 	{
-		//total number of columns
 		return 12;
 	}
 
 	@Override
 	public Cell getCell(Location loc)
 	{
-		// uses spreadsheet location to find the location of the cell
-		return textExcel[loc.getRow()][loc.getCol()];
+		// uses spreadsheet location to find the location 
+		return Excel[loc.getRow()][loc.getCol()];
 	}
 
 	@Override
-	public String getGridText()
-	{
-		//begins the start of the grid
-		String grid = "   |";
+	public String getGridText() {
 		
-		//fills in the top row with the letters
-		for(int i = 0; i < getCols(); i++){
-			grid += (char) (i + 'A') + "         |";
+		String gridText = "   |";
+		for (int i = 65; i <= 76; i++) {
+			gridText += (char)i + "         |";	
 		}
-		
-		//fills in the body or rest of the grid
-		for(int i = 1; i <= getRows(); i++){
-			//skips to a new line after each row is finished
-			grid += "\n";
-			
-			//fills the first column to 3 characters
-			if(i < 10){
-				grid += i + "  |";
-			}else{
-				grid += i + " |";
+		//skips to a new line after each row is finished
+		gridText += "\n";
+		for(int i=0; i < Excel.length; i++) {
+			gridText+=i+1;
+			if(i < 9) 
+			{
+				gridText +=  "  |";
+				for(int j=0; j<Excel[i].length; j++) {
+		// displays 10 characters
+					gridText += Excel[i][j].abbreviatedCellText() + "|";
+				}
+			} else{ 
+				//double digit numbers only have one space afterwards
+				gridText += " |";
+				for(int j=0; j<Excel[i].length; j++) {
+					//should only display 10 characters
+					gridText += Excel[i][j].abbreviatedCellText() + "|";
+				}
 			}
-			
-			//sets all the values of each part of the textExcel
-			for(int j = 0; j < 12; j++){
-				grid += textExcel[i-1][j].abbreviatedCellText() + "|";
-			}
+			gridText += "\n";
 		}
-		// skips to next line after finishing creating the grid
-		grid += "\n";
-		return grid;
+		return gridText;
 	}
 	
 	public String inspectCell(String cellName){
-		//creating an instance of spreadsheetLocation to use 
+		//creates an instance of spreadsheetLocation to use 
 		//the getRow and getCol methods
 		SpreadsheetLocation loc = new SpreadsheetLocation(cellName);
 		//returns the full value of the cell
 		return (getCell(loc).fullCellText());
 	}
 	
-	public void clearCell(String location){
-		
-		//creating an instance of spreadsheetLocation to use 
-		//the getRow and getCol methods
-		SpreadsheetLocation loc = new SpreadsheetLocation(location);
-		
-		//remakes the cell into an empty cell to get rid of the value it had
-		textExcel[loc.getRow()][loc.getCol()] = new EmptyCell();
+		//clears the entire cell empty
+	public void clearCell(){
+		for(int i = 0; i < 12; i++){
+			for(int j = 0; j < 20; j++){
+				Excel [i][j] = new EmptyCell();
+			}
+		}
 	}
-	
+		
+	public void clearOneCell(String location) {
+		//creating an instance of spreadsheetLocation to use 
+		SpreadsheetLocation loc = new SpreadsheetLocation(location);
+		//remakes the cell into an empty cell to get rid of the value it had
+		Excel[loc.getRow()][loc.getCol()] = new EmptyCell();
+	}
 	public void newSheet(){
 		//creates a new grid to make everything empty
-		for(int i = 0; i < textExcel.length; i++){
-			for( int j = 0; j < textExcel[i].length; j++){
-				textExcel[i][j] = new EmptyCell();
+		for(int i = 0; i < Excel.length; i++){
+			for( int j = 0; j < Excel[i].length; j++){
+				Excel[i][j] = new EmptyCell();
 			}
 		}
 	}
 	
 	public void setCellValue(String loc, String value){
-		//creating an instance of spreadsheetLocation to use 
+		//creates an instance of spreadsheetLocation
 		//the getRow and getCol methods
+		//calls different cell classes 
 		SpreadsheetLocation area = new SpreadsheetLocation(loc);
 		//checks for quotes
 		if(value.contains("\"")){
-			textExcel[area.getRow()][area.getCol()] = new TextCell(value);
-			//checks to see if it has a percentage
+			Excel[area.getRow()][area.getCol()] = new TextCell(value);
+			//checks for percentage
 		}else if(value.contains("%")){
-			textExcel[area.getRow()][area.getCol()] = new PercentCell(value);
+			Excel[area.getRow()][area.getCol()] = new PercentCell(value);
 			
 			//checks for parenthesis
 		}else if(value.endsWith(")")){
-			textExcel[area.getRow()][area.getCol()] = (Cell) new FormulaCell(value, textExcel);
+			Excel[area.getRow()][area.getCol()] = new FormulaCell(value, Excel);
 			
 			//if there isn't anything then it has to be a value cell
 		}else{
-			textExcel[area.getRow()][area.getCol()] = new ValueCell(value);
+			Excel[area.getRow()][area.getCol()] = new ValueCell(value);
 		}
 		
 	}
 	
-	public String cellType(Location loc){
-		//tests for the type of cell and returns the type of cell as a string
-		Cell cell = getCell(loc);
-		if(cell instanceof TextCell){
-			return "TextCell";
-		}else if(cell instanceof PercentCell){
-			return "PercentCell";
-		}else if(cell instanceof ValueCell){
-			return "ValueCell";
-		}else{
-			return "FormulaCell";
-		}
-	}
 	
-	private String saveData (String filename){ 
-
-		PrintStream outputFile;
-	
-		try {
-			outputFile = new PrintStream(new File(filename));
-		}
-	
-		catch (FileNotFoundException e) {
-			return "File not found: " + filename;
-		}
-		
-		for(int i = 0; i < 12; i++){
-			for(int j = 0; j < 20; j++){
-				//makes the name or location of the cell
-				String cell = ""; 
-				cell += (char)(i + 'A');
-				cell += j + 1;
-				SpreadsheetLocation loc = new SpreadsheetLocation(cell);
-				//if the cell isnt an empty cell, it sends the file the contents
-				if(!(textExcel[j][i] instanceof EmptyCell)){
-					outputFile.println(cell + "," + cellType(loc) + "," + textExcel[j][i].fullCellText());
-				}
-			}
-		}
-		outputFile.close();
-		return "";
-	}
-	
-	private String openData (String filename){
-
-		Scanner outputFile;
-		
-		try {
-			outputFile = new Scanner(new File(filename));
-		}
-		
-		catch (FileNotFoundException e) {
-			return "File not found: " + filename;
-		}
-		
-		while(outputFile.hasNextLine()){
-			//splits the line of the file by the commas
-			String[] data = outputFile.nextLine().split(",");
-			//adds the percentage to the percent cell value
-			if(data[1].equals("PercentCell")){
-				double holder = Double.parseDouble(data[2]);
-				holder = holder * 100.0;
-				data[2] = Double.toString(holder);
-				data[2] += "%";
-			}
-			//sets the value of the cell
-			setCellValue(data[0], data[2]);
-		}
-		outputFile.close();
-		return getGridText();
-	}
-
-     }
+}

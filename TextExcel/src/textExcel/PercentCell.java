@@ -1,19 +1,28 @@
 package textExcel;
 
-public class PercentCell extends RealCell{
-	private String input = "";
-	private double percent = 0.0;
-	public PercentCell(String input){
-		this.input = input;
-		//stores value in parent class
-		setRealCell(input);
+public class PercentCell extends RealCell {
+	
+	public PercentCell(String input) {
+		super(input);
 	}
-		
+	public String abbreviatedCellText() {
+		String truncPercent = getValue().substring(0, getValue().indexOf("."));
+		if(truncPercent.length() > 11) {
+			return getValue().substring(0, 9) + "%";
+		} else {
+			truncPercent += "%";
+			return spaces(truncPercent);
+		}
 	}
-	public double getDoubleValue(){
-		//gets rid of percent sign and puts in decimal form
-		percent = Double.parseDouble(input.substring(0, input.length()-1))/100;
-		return percent;
+
+	@Override
+	public String fullCellText() {
+		Double decimal = getDoubleValue()*.01;
+		return decimal + "";
+	}
+	//changes the percent to a double
+	public double getDoubleValue() {
+		return Double.parseDouble(getValue().substring(0,getValue().length()-1));
 	}
 }
 

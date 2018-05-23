@@ -420,8 +420,7 @@ public class TestsALL
             String percent = "11.25%";
             grid.processCommand("A1 = " + percent);
             Cell dateCell = grid.getCell(new TestLocation(0,0));
-            assertEquals("date cell text", "11%", dateCell.abbreviatedCellText().trim());
-            assertEquals("date inspection text", "0.1125", dateCell.fullCellText());
+              assertEquals("date inspection text", "0.1125", dateCell.fullCellText());
         }
 
         @Test
